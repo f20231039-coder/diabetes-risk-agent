@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2B1D15">
+  <title>Diabetes Risk Check</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css?v=4">
+</head>
+<body>
+  <header class="band">
+    <div class="band-in">
+      <div>
+        <h1>Diabetes Risk Check</h1>
+        <p>Tell me your age, sugar and BMI in English or Hinglish. I'll estimate your risk and explain it simply.</p>
+      </div>
+      <div class="band-actions">
+        <div class="tabs" role="tablist" aria-label="View">
+          <button type="button" role="tab" aria-selected="true" data-tab="chat">Chat</button>
+          <button type="button" role="tab" aria-selected="false" data-tab="form">Form</button>
+        </div>
+        <button id="newChat" class="band-btn" type="button">New chat</button>
+      </div>
+    </div>
+  </header>
+  <p class="warn"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5v4.2M8 11.2v.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Educational demo, not medical advice. Consult a doctor.</p>
+
+  <div class="page">
+    <main id="log" class="conv" aria-live="polite">
+      <div class="bubble bot">
+        <p>Hi! Share your age, sugar (glucose) and BMI, for example <em>"I'm 45, fasting sugar 160, BMI 29"</em> or <em>"meri age 52 hai, sugar 180 aayi"</em>. Insulin and blood pressure are optional.</p>
+        <p class="small">No names or IDs needed. Afterwards, ask "what if my BMI was 25?"</p>
+      </div>
+    </main>
+
+    <aside id="panel" class="side collapsed">
+      <form id="valuesForm" class="card">
+        <h2>Your values</h2>
+        <p class="sub">Age, sugar and BMI are enough. More values can help.</p>
+        <div id="fields" class="fields"></div>
+        <details class="more" id="moreFields">
+          <summary>More values</summary>
+          <div id="moreFieldsBox" class="fields"></div>
+        </details>
+        <div class="form-actions">
+          <button type="submit" class="btn">Check my risk</button>
+          <button type="button" id="clearValues" class="link-btn">Clear</button>
+        </div>
+      </form>
+
+      <div class="card">
+        <h2>Model</h2>
+        <p class="sub">Pick what the estimate is based on.</p>
+        <div class="group">
+          <label for="optDataset">Learned from</label>
+          <select id="optDataset"></select>
+          <p id="datasetInfo" class="plain"></p>
+        </div>
+        <div class="group">
+          <span id="methodLabel">Method</span>
+          <div class="pills" id="optModel" role="radiogroup" aria-labelledby="methodLabel">
+            <button type="button" role="radio" aria-checked="true" data-value="mlp">Neural net</button>
+            <button type="button" role="radio" aria-checked="false" data-value="naive_bayes">Naive Bayes</button>
+            <button type="button" role="radio" aria-checked="false" data-value="compare">Compare both</button>
+          </div>
+        </div>
+        <div class="group last">
+          <label for="optLlm">Assistant</label>
+          <select id="optLlm"></select>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="composer">
+    <div class="composer-in">
+      <div class="composer-col">
+        <div class="suggest" id="chips">
+          <button type="button">What if my BMI was 25?</button>
+          <button type="button">Compare both models</button>
+          <button type="button">Why does sugar matter most?</button>
+        </div>
+        <form id="form" class="box">
+          <textarea id="input" rows="1" maxlength="1000" placeholder="Type in English or Hinglish…" aria-label="Message" required></textarea>
+          <button id="send" type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="/static/app.js?v=4"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+{
+  "version": "v1",
+  "created": "2025-11-27 (original assignment)",
+  "dataset_rows": 768,
+  "notes": "Original 4-feature models. Missing insulin is imputed with the training median.",
+  "impute_missing": [
+    "insulin"
+  ],
+  "tiers": {
+    "standard": {
+      "features": [
+        "age",
+        "glucose",
+        "bmi",
+        "insulin"
+      ],
+      "preprocessing": {
+        "columns": [
+          "Glucose",
+          "Insulin",
+          "BMI",
+          "Age"
+        ],
+        "medians": {
+          "Glucose": 117.0,
+          "Insulin": 125.0,
+          "BMI": 32.3,
+          "Age": 29.0
+        },
+        "bounds": {
+          "Glucose": [
+            39.0,
+            201.0
+          ],
+          "Insulin": [
+            112.875,
+            135.875
+          ],
+          "BMI": [
+            13.85,
+            50.25
+          ],
+          "Age": [
+            -1.5,
+            66.5
+          ]
+        },
+        "interactions": [
+          [
+            "BMI",
+            "Age"
+          ],
+          [
+            "Glucose",
+            "Insulin"
+          ]
+        ]
+      },
+      "files": {
+        "mlp": "standard_mlp.pkl",
+        "naive_bayes": "standard_naive_bayes.pkl"
+      },
+      "test_metrics": {}
+    }
+  }
+}

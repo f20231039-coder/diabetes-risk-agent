@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#2B1D15">
+  <title>Model Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/admin.css?v=3">
+</head>
+<body>
+  <header class="band">
+    <div class="band-in">
+      <div>
+        <h1>Model admin</h1>
+        <p>Upload rows, retrain, compare versions, roll back.</p>
+      </div>
+      <a class="band-btn" href="/">Back to chat</a>
+    </div>
+  </header>
+
+  <div class="page">
+    <section class="panel">
+      <h2>Admin token</h2>
+      <div class="row">
+        <input id="token" type="password" autocomplete="off" placeholder="ADMIN_TOKEN from the server's .env" aria-label="Admin token">
+        <button id="saveToken" type="button" class="primary">Use token</button>
+      </div>
+      <p class="small">Kept only in this browser tab.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Upload data</h2>
+      <p class="small">CSV with an <code>Outcome</code> column (0/1) and at least <code>Age</code>, <code>Glucose</code>, <code>BMI</code>.
+        Optional: <code>Insulin</code>, <code>BloodPressure</code>, <code>Pregnancies</code>, <code>SkinThickness</code>, <code>DiabetesPedigreeFunction</code>.
+        Missing values = 0. New rows are added (duplicates skipped) and every model is retrained. The new version goes live only if it isn't less accurate.</p>
+      <div class="row">
+        <select id="dataset" aria-label="Dataset"></select>
+        <input id="file" type="file" accept=".csv,text/csv" aria-label="CSV file">
+      </div>
+      <div class="row">
+        <label class="check"><input id="force" type="checkbox"> Make it live even if accuracy drops</label>
+        <button id="upload" type="button" class="primary">Upload &amp; retrain</button>
+      </div>
+      <div id="uploadStatus" class="status" aria-live="polite"></div>
+    </section>
+
+    <section class="panel">
+      <div class="row spread">
+        <h2>Model versions</h2>
+        <button id="refresh" type="button" class="ghost">Refresh</button>
+      </div>
+      <div id="versions" class="versions"><p class="small">Enter the admin token to load versions.</p></div>
+    </section>
+  </div>
+  <script src="/static/admin.js?v=3"></script>
+</body>
+</html>

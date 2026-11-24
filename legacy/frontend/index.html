@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 Diabetes Prediction System</h1>
+            <p class="subtitle">Machine Learning-based Diabetes Risk Assessment</p>
+        </header>
+
+        <main>
+            <form id="predictionForm" class="prediction-form">
+                <div class="form-section">
+                    <h2>Patient Information</h2>
+                    
+                    <div class="form-group">
+                        <label for="glucose">
+                            Glucose Level (mg/dL)
+                            <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="number" 
+                            id="glucose" 
+                            name="glucose" 
+                            min="0" 
+                            max="300" 
+                            step="0.1" 
+                            required
+                            placeholder="e.g., 120"
+                        >
+                        <small class="help-text">Normal range: 70-140 mg/dL</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="insulin">
+                            Insulin Level (μU/mL)
+                            <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="number" 
+                            id="insulin" 
+                            name="insulin" 
+                            min="0" 
+                            max="1000" 
+                            step="0.1" 
+                            required
+                            placeholder="e.g., 85"
+                        >
+                        <small class="help-text">Normal range: 16-166 μU/mL</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bmi">
+                            Body Mass Index (BMI)
+                            <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="number" 
+                            id="bmi" 
+                            name="bmi" 
+                            min="10" 
+                            max="70" 
+                            step="0.1" 
+                            required
+                            placeholder="e.g., 25.5"
+                        >
+                        <small class="help-text">Normal range: 18.5-24.9</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age">
+                            Age (years)
+                            <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="number" 
+                            id="age" 
+                            name="age" 
+                            min="1" 
+                            max="120" 
+                            step="1" 
+                            required
+                            placeholder="e.g., 45"
+                        >
+                        <small class="help-text">Patient age in years</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="model">
+                            Select Model
+                            <span class="required">*</span>
+                        </label>
+                        <select id="model" name="model" required>
+                            <option value="">-- Choose a model --</option>
+                            <option value="mlp">MLP (Multilayer Perceptron)</option>
+                            <option value="naive_bayes">Naive Bayes</option>
+                        </select>
+                        <small class="help-text">Choose the prediction model</small>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="predictBtn" class="btn btn-primary">
+                        <span class="btn-text">Predict</span>
+                        <span class="spinner" style="display: none;"></span>
+                    </button>
+                    <button type="reset" class="btn btn-secondary">Clear Form</button>
+                </div>
+            </form>
+
+            <!-- Error Message Area -->
+            <div id="errorMessage" class="message error-message" style="display: none;">
+                <div class="message-icon">⚠️</div>
+                <div class="message-content">
+                    <strong>Error</strong>
+                    <p id="errorText"></p>
+                </div>
+            </div>
+
+            <!-- Result Display Area -->
+            <div id="resultArea" class="result-area" style="display: none;">
+                <div class="result-card">
+                    <div class="result-icon" id="resultIcon"></div>
+                    <h2 id="resultTitle"></h2>
+                    <p class="result-message" id="resultMessage"></p>
+                    
+                    <div class="result-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Prediction:</span>
+                            <span class="detail-value" id="predictionValue"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Confidence:</span>
+                            <span class="detail-value" id="probabilityValue"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Model Used:</span>
+                            <span class="detail-value" id="modelUsed"></span>
+                        </div>
+                    </div>
+
+                    <div class="result-disclaimer">
+                        <strong>⚕️ Medical Disclaimer:</strong>
+                        <p>This prediction is for educational purposes only and should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always consult with a qualified healthcare provider.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,437 @@
+{
+  "version": "v2",
+  "created": "2026-11-24 12:57:02",
+  "dataset_rows": 768,
+  "train_rows": 614,
+  "test_rows": 154,
+  "split": {
+    "test_size": 0.2,
+    "seed": 42,
+    "stratified": true
+  },
+  "required": [
+    "age",
+    "glucose",
+    "bmi"
+  ],
+  "notes": "trained from CLI",
+  "tiers": {
+    "minimum": {
+      "features": [
+        "age",
+        "glucose",
+        "bmi"
+      ],
+      "preprocessing": {
+        "columns": [
+          "Age",
+          "Glucose",
+          "BMI"
+        ],
+        "medians": {
+          "Age": 29.0,
+          "Glucose": 117.0,
+          "BMI": 32.4
+        },
+        "bounds": {
+          "Age": [
+            -1.5,
+            66.5
+          ],
+          "Glucose": [
+            37.5,
+            201.5
+          ],
+          "BMI": [
+            14.3125,
+            49.8125
+          ]
+        },
+        "interactions": [
+          [
+            "BMI",
+            "Age"
+          ]
+        ]
+      },
+      "files": {
+        "mlp": "minimum_mlp.pkl",
+        "naive_bayes": "minimum_naive_bayes.pkl"
+      },
+      "test_metrics": {
+        "mlp": {
+          "accuracy": 0.7597,
+          "precision": 0.6491,
+          "recall": 0.6852,
+          "f1": 0.6667,
+          "roc_auc": 0.8215,
+          "cv_f1_mean": 0.5825,
+          "cv_f1_std": 0.0408
+        },
+        "naive_bayes": {
+          "accuracy": 0.7338,
+          "precision": 0.6226,
+          "recall": 0.6111,
+          "f1": 0.6168,
+          "roc_auc": 0.7787,
+          "cv_f1_mean": 0.6562,
+          "cv_f1_std": 0.0205
+        }
+      }
+    },
+    "standard": {
+      "features": [
+        "age",
+        "glucose",
+        "bmi",
+        "insulin"
+      ],
+      "preprocessing": {
+        "columns": [
+          "Age",
+          "Glucose",
+          "BMI",
+          "Insulin"
+        ],
+        "medians": {
+          "Age": 29.0,
+          "Glucose": 117.0,
+          "BMI": 32.4,
+          "Insulin": 125.0
+        },
+        "bounds": {
+          "Age": [
+            -1.5,
+            66.5
+          ],
+          "Glucose": [
+            37.5,
+            201.5
+          ],
+          "BMI": [
+            14.3125,
+            49.8125
+          ],
+          "Insulin": [
+            105.0,
+            145.0
+          ]
+        },
+        "interactions": [
+          [
+            "BMI",
+            "Age"
+          ],
+          [
+            "Glucose",
+            "Insulin"
+          ]
+        ]
+      },
+      "files": {
+        "mlp": "standard_mlp.pkl",
+        "naive_bayes": "standard_naive_bayes.pkl"
+      },
+      "test_metrics": {
+        "mlp": {
+          "accuracy": 0.7403,
+          "precision": 0.6207,
+          "recall": 0.6667,
+          "f1": 0.6429,
+          "roc_auc": 0.8331,
+          "cv_f1_mean": 0.5851,
+          "cv_f1_std": 0.0289
+        },
+        "naive_bayes": {
+          "accuracy": 0.7143,
+          "precision": 0.5893,
+          "recall": 0.6111,
+          "f1": 0.6,
+          "roc_auc": 0.772,
+          "cv_f1_mean": 0.6579,
+          "cv_f1_std": 0.0318
+        }
+      }
+    },
+    "extended": {
+      "features": [
+        "age",
+        "glucose",
+        "bmi",
+        "blood_pressure",
+        "pregnancies"
+      ],
+      "preprocessing": {
+        "columns": [
+          "Age",
+          "Glucose",
+          "BMI",
+          "BloodPressure",
+          "Pregnancies"
+        ],
+        "medians": {
+          "Age": 29.0,
+          "Glucose": 117.0,
+          "BMI": 32.4,
+          "BloodPressure": 72.0,
+          "Pregnancies": 3.0
+        },
+        "bounds": {
+          "Age": [
+            -1.5,
+            66.5
+          ],
+          "Glucose": [
+            37.5,
+            201.5
+          ],
+          "BMI": [
+            14.3125,
+            49.8125
+          ],
+          "BloodPressure": [
+            40.0,
+            104.0
+          ],
+          "Pregnancies": [
+            -6.5,
+            13.5
+          ]
+        },
+        "interactions": [
+          [
+            "BMI",
+            "Age"
+          ]
+        ]
+      },
+      "files": {
+        "mlp": "extended_mlp.pkl",
+        "naive_bayes": "extended_naive_bayes.pkl"
+      },
+      "test_metrics": {
+        "mlp": {
+          "accuracy": 0.7403,
+          "precision": 0.6346,
+          "recall": 0.6111,
+          "f1": 0.6226,
+          "roc_auc": 0.8006,
+          "cv_f1_mean": 0.6408,
+          "cv_f1_std": 0.0731
+        },
+        "naive_bayes": {
+          "accuracy": 0.7143,
+          "precision": 0.5862,
+          "recall": 0.6296,
+          "f1": 0.6071,
+          "roc_auc": 0.7752,
+          "cv_f1_mean": 0.6418,
+          "cv_f1_std": 0.0182
+        }
+      }
+    },
+    "extended_insulin": {
+      "features": [
+        "age",
+        "glucose",
+        "bmi",
+        "insulin",
+        "blood_pressure",
+        "pregnancies"
+      ],
+      "preprocessing": {
+        "columns": [
+          "Age",
+          "Glucose",
+          "BMI",
+          "Insulin",
+          "BloodPressure",
+          "Pregnancies"
+        ],
+        "medians": {
+          "Age": 29.0,
+          "Glucose": 117.0,
+          "BMI": 32.4,
+          "Insulin": 125.0,
+          "BloodPressure": 72.0,
+          "Pregnancies": 3.0
+        },
+        "bounds": {
+          "Age": [
+            -1.5,
+            66.5
+          ],
+          "Glucose": [
+            37.5,
+            201.5
+          ],
+          "BMI": [
+            14.3125,
+            49.8125
+          ],
+          "Insulin": [
+            105.0,
+            145.0
+          ],
+          "BloodPressure": [
+            40.0,
+            104.0
+          ],
+          "Pregnancies": [
+            -6.5,
+            13.5
+          ]
+        },
+        "interactions": [
+          [
+            "BMI",
+            "Age"
+          ],
+          [
+            "Glucose",
+            "Insulin"
+          ]
+        ]
+      },
+      "files": {
+        "mlp": "extended_insulin_mlp.pkl",
+        "naive_bayes": "extended_insulin_naive_bayes.pkl"
+      },
+      "test_metrics": {
+        "mlp": {
+          "accuracy": 0.7532,
+          "precision": 0.66,
+          "recall": 0.6111,
+          "f1": 0.6346,
+          "roc_auc": 0.7913,
+          "cv_f1_mean": 0.6327,
+          "cv_f1_std": 0.0643
+        },
+        "naive_bayes": {
+          "accuracy": 0.7013,
+          "precision": 0.5714,
+          "recall": 0.5926,
+          "f1": 0.5818,
+          "roc_auc": 0.7754,
+          "cv_f1_mean": 0.6518,
+          "cv_f1_std": 0.0227
+        }
+      }
+    },
+    "full": {
+      "features": [
+        "age",
+        "glucose",
+        "bmi",
+        "insulin",
+        "blood_pressure",
+        "pregnancies",
+        "skin_thickness",
+        "pedigree"
+      ],
+      "preprocessing": {
+        "columns": [
+          "Age",
+          "Glucose",
+          "BMI",
+          "Insulin",
+          "BloodPressure",
+          "Pregnancies",
+          "SkinThickness",
+          "DiabetesPedigreeFunction"
+        ],
+        "medians": {
+          "Age": 29.0,
+          "Glucose": 117.0,
+          "BMI": 32.4,
+          "Insulin": 125.0,
+          "BloodPressure": 72.0,
+          "Pregnancies": 3.0,
+          "SkinThickness": 29.0,
+          "DiabetesPedigreeFunction": 0.3825
+        },
+        "bounds": {
+          "Age": [
+            -1.5,
+            66.5
+          ],
+          "Glucose": [
+            37.5,
+            201.5
+          ],
+          "BMI": [
+            14.3125,
+            49.8125
+          ],
+          "Insulin": [
+            105.0,
+            145.0
+          ],
+          "BloodPressure": [
+            40.0,
+            104.0
+          ],
+          "Pregnancies": [
+            -6.5,
+            13.5
+          ],
+          "SkinThickness": [
+            14.5,
+            42.5
+          ],
+          "DiabetesPedigreeFunction": [
+            -0.346375,
+            1.2306249999999999
+          ]
+        },
+        "interactions": [
+          [
+            "BMI",
+            "Age"
+          ],
+          [
+            "Glucose",
+            "Insulin"
+          ]
+        ]
+      },
+      "files": {
+        "mlp": "full_mlp.pkl",
+        "naive_bayes": "full_naive_bayes.pkl"
+      },
+      "test_metrics": {
+        "mlp": {
+          "accuracy": 0.7532,
+          "precision": 0.6429,
+          "recall": 0.6667,
+          "f1": 0.6545,
+          "roc_auc": 0.8274,
+          "cv_f1_mean": 0.6242,
+          "cv_f1_std": 0.052
+        },
+        "naive_bayes": {
+          "accuracy": 0.7208,
+          "precision": 0.5965,
+          "recall": 0.6296,
+          "f1": 0.6126,
+          "roc_auc": 0.7893,
+          "cv_f1_mean": 0.6547,
+          "cv_f1_std": 0.0121
+        }
+      }
+    }
+  },
+  "promotion": {
+    "candidate_standard_mlp_f1": 0.6429,
+    "active_version": "v1",
+    "active_standard_mlp_f1_same_test_rows": 0.6964,
+    "f1_difference_95ci": [
+      -0.1045,
+      -0.0141
+    ],
+    "difference_is_noise": false,
+    "promoted": false,
+    "rule": "promote if candidate F1 >= active F1 on the same test rows"
+  },
+  "dataset": "pima"
+}

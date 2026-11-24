@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A · Café Pinboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --board: #EADCC6;
+    --board-dot: #DCCAB0;
+    --card: #FBF6EE;
+    --card-2: #F4EBDD;
+    --ink: #33241B;
+    --ink-2: #6E5442;
+    --mocha: #8A6A4F;
+    --caramel: #C49A6C;
+    --latte: #E6D5BE;
+    --brick: #A4513A;
+    --brick-bg: #F3DED5;
+    --olive: #56643A;
+    --olive-bg: #E4E6CF;
+    --line: #DCCBB3;
+    --shadow: 0 1px 1px rgba(51, 36, 27, .06), 0 6px 16px -6px rgba(51, 36, 27, .18);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background-color: var(--board);
+    background-image: radial-gradient(var(--board-dot) 1px, transparent 1.4px);
+    background-size: 14px 14px;
+    color: var(--ink);
+    font: 16px/1.55 "Hanken Grotesk", system-ui, sans-serif;
+  }
+  ::selection { background: var(--caramel); color: var(--card); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 20px 16px 120px; }
+  header.top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+  .brand h1 { font: 700 2rem/1.05 "Bricolage Grotesque", sans-serif; letter-spacing: -0.02em; margin: 0; }
+  .brand p { margin: 6px 0 0; color: var(--ink-2); max-width: 46ch; }
+  .note {
+    font-size: .82rem; color: var(--ink-2); background: var(--card-2); border: 1px dashed var(--caramel);
+    border-radius: 10px; padding: 6px 10px; max-width: 260px;
+  }
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  @media (min-width: 900px) { .grid { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: start; } }
+
+  /* pins */
+  .pin {
+    position: relative; background: var(--card); border-radius: 14px; box-shadow: var(--shadow);
+    padding: 16px 18px;
+  }
+  .pin::before {
+    content: ""; position: absolute; top: -7px; left: 50%; width: 14px; height: 14px; margin-left: -7px;
+    border-radius: 50%; background: radial-gradient(circle at 35% 30%, #E7C49C, var(--caramel) 55%, #8C6640);
+    box-shadow: 0 2px 3px rgba(51,36,27,.35);
+  }
+  .pin.tack-brick::before { background: radial-gradient(circle at 35% 30%, #D99A86, var(--brick) 55%, #6E2F1F); }
+  .pin.tack-olive::before { background: radial-gradient(circle at 35% 30%, #B8C08F, var(--olive) 55%, #34401F); }
+
+  .feed { display: flex; flex-direction: column; gap: 18px; }
+  .who { font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--mocha); margin-bottom: 4px; }
+  .pin p { margin: 0 0 8px; } .pin p:last-child { margin-bottom: 0; }
+  .user { align-self: flex-end; max-width: 78%; background: var(--latte); }
+  .user::before { display: none; }
+  .bot { max-width: 92%; }
+  .tag { display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--card-2); color: var(--ink-2); border: 1px solid var(--line); }
+  .tag i { width: 7px; height: 7px; border-radius: 50%; background: var(--caramel); }
+
+  /* result pin */
+  .result { max-width: 100%; padding: 0; overflow: hidden; }
+  .result .strip { background: var(--brick); color: #FBF1EA; padding: 14px 18px 12px; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 8px; }
+  .result.low .strip { background: var(--olive); }
+  .strip .label { font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; opacity: .85; }
+  .strip .verdict { font: 700 1.6rem/1.1 "Bricolage Grotesque", sans-serif; }
+  .strip .pct { font: 700 2.6rem/1 "Bricolage Grotesque", sans-serif; font-variant-numeric: tabular-nums; }
+  .scale { padding: 12px 18px 0; }
+  .bar { position: relative; height: 10px; background: var(--latte); border-radius: 6px; }
+  .bar span { position: absolute; inset: 0 auto 0 0; background: var(--brick); border-radius: 6px; }
+  .result.low .bar span { background: var(--olive); }
+  .ticks { display: flex; justify-content: space-between; font-size: .72rem; color: var(--ink-2); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .result .body { padding: 12px 18px 16px; }
+  .chips-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 10px; }
+  .chip-val { font-size: .8rem; background: var(--card-2); border: 1px solid var(--line); border-radius: 8px; padding: 2px 8px; font-variant-numeric: tabular-nums; }
+  details { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 10px; }
+  summary { cursor: pointer; font-weight: 600; color: var(--mocha); list-style: none; display: flex; align-items: center; gap: 8px; }
+  summary::-webkit-details-marker { display: none; }
+  summary svg { transition: transform .2s ease; }
+  details[open] summary svg { transform: rotate(90deg); }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 10px 0 0; font-size: .88rem; }
+  dt { color: var(--ink-2); } dd { margin: 0; }
+  .disclaimer { font-size: .78rem; color: var(--ink-2); margin-top: 10px; }
+
+  /* side board */
+  .side { display: flex; flex-direction: column; gap: 18px; }
+  @media (min-width: 900px) { .side { position: sticky; top: 16px; } }
+  .side h2 { font: 700 1.15rem/1.2 "Bricolage Grotesque", sans-serif; margin: 0 0 4px; }
+  .side .sub { font-size: .85rem; color: var(--ink-2); margin: 0 0 12px; }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  label { display: flex; flex-direction: column; gap: 4px; font-size: .82rem; color: var(--ink-2); font-weight: 500; }
+  label b { color: var(--brick); font-weight: 600; }
+  input, select {
+    font: inherit; font-size: .95rem; color: var(--ink); background: var(--card-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 9px 10px; min-width: 0; width: 100%;
+  }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--caramel); outline-offset: 0; border-color: transparent; }
+  .more { grid-column: 1 / -1; }
+  .more summary { font-size: .85rem; }
+  .more .fields { margin-top: 10px; }
+  .btn {
+    font: 600 1rem "Hanken Grotesk", sans-serif; border: 0; border-radius: 12px; padding: 12px 16px; cursor: pointer;
+    background: var(--ink); color: var(--card); width: 100%; margin-top: 12px;
+  }
+  .btn:hover { background: #4A3427; }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--card-2); border: 1px solid var(--line); border-radius: 12px; padding: 3px; gap: 3px; }
+  .seg button { font: 500 .85rem "Hanken Grotesk", sans-serif; border: 0; background: transparent; color: var(--ink-2); padding: 8px 4px; border-radius: 9px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: var(--shadow); font-weight: 600; }
+  .stack { display: flex; flex-direction: column; gap: 12px; }
+  .plain { font-size: .82rem; color: var(--ink-2); margin: 2px 0 0; }
+
+  /* composer */
+  .composer {
+    position: fixed; left: 0; right: 0; bottom: 0; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--board) 70%, rgba(234,220,198,0));
+  }
+  .composer-in { max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  @media (min-width: 900px) { .composer-in { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 18px; } }
+  .suggest { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .suggest button { flex: none; font: 500 .82rem "Hanken Grotesk", sans-serif; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+  .box { display: flex; gap: 8px; background: var(--card); border-radius: 16px; box-shadow: var(--shadow); padding: 6px; }
+  .box textarea { flex: 1; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: 8px 10px; }
+  .box button { border: 0; border-radius: 12px; background: var(--brick); color: #FBF1EA; font: 600 .95rem "Hanken Grotesk", sans-serif; padding: 0 18px; cursor: pointer; }
+  .open-panel { display: inline-flex; }
+  @media (min-width: 900px) { .open-panel { display: none; } }
+  .side.collapsed { display: none; }
+  @media (min-width: 900px) { .side.collapsed { display: flex; } }
+  .ghost { white-space: nowrap; flex: none; font: 600 .85rem "Hanken Grotesk", sans-serif; background: var(--card); border: 1px solid var(--line); color: var(--ink); border-radius: 10px; padding: 8px 12px; cursor: pointer; }
+  @media (max-width: 899px) { .user { max-width: 88%; } .bot { max-width: 100%; } .brand h1 { font-size: 1.6rem; } .note { display: none; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">
+        <h1>Diabetes Risk Check</h1>
+        <p>Tell me your age, fasting sugar and BMI, in English or Hinglish. I'll estimate your risk and explain it.</p>
+      </div>
+      <div class="note">Educational demo, not medical advice. Consult a doctor.</div>
+      <button class="ghost open-panel" type="button" data-toggle>Your values</button>
+    </header>
+
+    <div class="grid">
+      <main class="feed" aria-live="polite">
+        <article class="pin bot">
+          <div class="who">Assistant</div>
+          <p>Hi! Share your age, fasting sugar and BMI, or fill in the “Your values” card. Insulin and blood pressure are optional.</p>
+          <p style="font-size:.85rem;color:var(--ink-2)">Please don't share your name or any ID.</p>
+        </article>
+        <article class="pin user"><p>meri age 45 hai, fasting sugar 160 aayi</p></article>
+        <article class="pin bot tack-brick">
+          <div class="who">Assistant</div>
+          <p><span class="tag"><i></i>needs BMI</span></p>
+          <p>Thanks! What's your BMI? That's the last value I need.</p>
+        </article>
+        <article class="pin user"><p>BMI 29</p></article>
+
+        <article class="pin bot result tack-brick">
+          <div class="strip">
+            <div><div class="label">Estimated risk</div><div class="verdict">Higher</div></div>
+            <div class="pct">87%</div>
+          </div>
+          <div class="scale"><div class="bar"><span style="width:87%"></span></div><div class="ticks"><span>0</span><span>50</span><span>100</span></div></div>
+          <div class="body">
+            <div class="chips-row"><span class="chip-val">Age 45</span><span class="chip-val">Fasting sugar 160</span><span class="chip-val">BMI 29</span></div>
+            <p>The model estimates a <strong>higher</strong> risk of diabetes. Your fasting sugar of 160 is the main reason: it's well above the usual fasting range (under 100).</p>
+            <p>Please see a doctor for an HbA1c or fasting glucose test.</p>
+            <details>
+              <summary><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>How this was worked out</summary>
+              <dl>
+                <dt>Learned from</dt><dd>10,834 US adults who gave their fasting sugar (NHANES 2009–2018)</dd>
+                <dt>Model</dt><dd>MLP neural network, version v3</dd>
+                <dt>Used</dt><dd>Age, fasting sugar, BMI</dd>
+                <dt>Measured</dt><dd>91% accuracy on 2,167 unseen people · F1 0.72</dd>
+                <dt>Second opinion</dt><dd>Naive Bayes agrees (93%)</dd>
+              </dl>
+            </details>
+            <p class="disclaimer">Educational demo, not medical advice. Consult a doctor.</p>
+          </div>
+        </article>
+
+        <article class="pin user"><p>agar sugar 120 ho jaye toh?</p></article>
+        <article class="pin bot result low tack-olive">
+          <div class="strip">
+            <div><div class="label">What if · sugar 120</div><div class="verdict">Lower</div></div>
+            <div class="pct">13%</div>
+          </div>
+          <div class="scale"><div class="bar"><span style="width:13%"></span></div><div class="ticks"><span>0</span><span>50</span><span>100</span></div></div>
+          <div class="body">
+            <p>With fasting sugar at 120 (and the same age and BMI), the estimate drops to <strong>13%</strong>. Your saved values haven't changed.</p>
+          </div>
+        </article>
+      </main>
+
+      <aside class="side collapsed" id="panel">
+        <section class="pin">
+          <h2>Your values</h2>
+          <p class="sub">Age, fasting sugar and BMI are enough. More values can help.</p>
+          <form onsubmit="event.preventDefault()">
+            <div class="fields">
+              <label>Age <b>*</b><input inputmode="decimal" value="45"></label>
+              <label>Fasting sugar <b>*</b><input inputmode="decimal" value="160" placeholder="mg/dL"></label>
+              <label>BMI <b>*</b><input inputmode="decimal" value="29"></label>
+              <label>Insulin<input inputmode="decimal" placeholder="optional"></label>
+              <details class="more">
+                <summary>More values (optional)</summary>
+                <div class="fields">
+                  <label>Blood pressure (lower)<input inputmode="decimal" placeholder="e.g. 80"></label>
+                  <label>Pregnancies<input inputmode="decimal" placeholder="0–20"></label>
+                  <label>Skin-fold (mm)<input inputmode="decimal" placeholder="5–100"></label>
+                  <label>Family-history score<input inputmode="decimal" placeholder="0.05–3"></label>
+                </div>
+              </details>
+            </div>
+            <button class="btn" type="submit">Check my risk</button>
+          </form>
+        </section>
+        <section class="pin tack-olive stack">
+          <h2>Model</h2>
+          <label>Learned from
+            <select><option>US adults, fasting sugar (recommended)</option><option>Pima women, 2-hour sugar test</option><option>Kaggle set (comparison only)</option></select>
+          </label>
+          <p class="plain">10,834 people, measured 91% accurate on unseen data.</p>
+          <div>
+            <div style="font-size:.82rem;color:var(--ink-2);font-weight:500;margin-bottom:4px">Method</div>
+            <div class="seg" role="group" aria-label="Method">
+              <button type="button" aria-pressed="true">Neural net</button>
+              <button type="button" aria-pressed="false">Naive Bayes</button>
+              <button type="button" aria-pressed="false">Compare</button>
+            </div>
+          </div>
+          <label>Assistant
+            <select><option>Gemini 3.5 Flash</option><option>Gemini 3.5 Flash-Lite</option><option>Offline (no AI)</option></select>
+          </label>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <div class="composer">
+    <div class="composer-in">
+      <div class="stack" style="gap:8px">
+        <div class="suggest">
+          <button type="button">What if my BMI was 25?</button>
+          <button type="button">Compare both models</button>
+          <button type="button">Why is sugar so important?</button>
+        </div>
+        <form class="box" onsubmit="event.preventDefault()">
+          <textarea rows="1" placeholder="Type in English or Hinglish…" aria-label="Message"></textarea>
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
+<script>
+  document.querySelectorAll('[data-toggle]').forEach(b => b.addEventListener('click', () => {
+    const p = document.getElementById('panel'); p.classList.toggle('collapsed');
+    if (!p.classList.contains('collapsed')) p.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
+  document.querySelectorAll('.seg').forEach(g => g.addEventListener('click', e => {
+    if (e.target.tagName !== 'BUTTON') return;
+    g.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === e.target)));
+  }));
+  document.querySelectorAll('.suggest button').forEach(b => b.addEventListener('click', () => { document.querySelector('.box textarea').value = b.textContent; }));
+</script>
+</body>
+</html>

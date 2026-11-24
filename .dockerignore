@@ -1,0 +1,15 @@
+**/__pycache__
+*.pyc
+.pytest_cache
+.env
+system.log
+evals/results/
+evals/*.log
+tests/
+data/download/
+data/uploads/
+data/nhanes/raw/
+evals/
+data/kaggle/raw/
+legacy/
+docs/

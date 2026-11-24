@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B · Report Slip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #E4D6C1;
+    --paper: #FAF4E8;
+    --paper-2: #F2E8D6;
+    --ink: #2D211A;
+    --ink-2: #6B5444;
+    --sepia: #7A604A;
+    --rule: #DCCBB2;
+    --coffee: #6B4A35;
+    --brick: #9C4A35;
+    --brick-bg: #F1DCD2;
+    --olive: #55623A;
+    --olive-bg: #E2E4CC;
+    --amber: #7A4F12;
+    --shadow: 0 1px 0 rgba(45,33,26,.05), 0 12px 28px -14px rgba(45,33,26,.35);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--desk); color: var(--ink); font: 16px/1.55 "Source Sans 3", system-ui, sans-serif; }
+  ::selection { background: var(--coffee); color: var(--paper); }
+  .num { font-family: "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .page { max-width: 1100px; margin: 0 auto; padding: 18px 16px 130px; display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 920px) { .page { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); align-items: start; } }
+
+  .sheet { background: var(--paper); border-radius: 6px; box-shadow: var(--shadow); }
+  .masthead { padding: 18px 20px 14px; border-bottom: 2px solid var(--ink); display: flex; justify-content: space-between; gap: 12px; align-items: flex-end; }
+  .masthead h1 { font: 400 1.75rem/1.05 "Young Serif", serif; margin: 0; letter-spacing: -0.01em; }
+  .masthead .meta { font-size: .78rem; color: var(--ink-2); text-align: right; line-height: 1.4; }
+  .notice { margin: 0; padding: 8px 20px; background: var(--paper-2); border-bottom: 1px solid var(--rule); font-size: .82rem; color: var(--ink-2); }
+
+  .remarks { padding: 6px 20px 20px; }
+  .entry { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-bottom: 1px dashed var(--rule); }
+  .entry:last-child { border-bottom: 0; }
+  .entry .who { font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--sepia); padding-top: 3px; }
+  .entry.you .who { color: var(--coffee); }
+  .entry.you .text { font-weight: 600; }
+  .entry p { margin: 0 0 6px; } .entry p:last-child { margin: 0; }
+  .flagline { display: inline-flex; gap: 6px; align-items: center; font-size: .8rem; font-weight: 700; letter-spacing: .04em; color: var(--amber); border: 1.5px solid currentColor; border-radius: 4px; padding: 1px 7px; text-transform: uppercase; }
+
+  /* the slip */
+  .slip { margin: 6px 0 4px; border: 1px solid var(--ink); border-radius: 4px; background: #FFFBF3; }
+  .slip-head { border-radius: 3px 3px 0 0; display: flex; justify-content: space-between; align-items: baseline; padding: 10px 14px; border-bottom: 1px solid var(--ink); background: var(--paper-2); }
+  .slip-head strong { font: 400 1.05rem "Young Serif", serif; }
+  .slip-head span { font-size: .75rem; color: var(--ink-2); }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th { text-align: left; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); font-weight: 700; padding: 8px 14px 6px; border-bottom: 1px solid var(--rule); }
+  td { padding: 8px 14px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+  tr:last-child td { border-bottom: 0; }
+  .flag { font-size: .72rem; font-weight: 700; letter-spacing: .06em; padding: 2px 7px; border-radius: 3px; }
+  .flag.high { color: var(--brick); background: var(--brick-bg); }
+  .flag.ok { color: var(--olive); background: var(--olive-bg); }
+  .flag.mid { color: var(--amber); background: #F3E5C8; }
+  .total { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; padding: 14px; border-top: 1.5px solid var(--ink); }
+  .total .k { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); font-weight: 700; }
+  .total .v { font: 400 1.5rem/1.1 "Young Serif", serif; }
+  .stamp { font: 600 2.4rem/1 "JetBrains Mono", monospace; color: var(--brick); border: 3px solid var(--brick); border-radius: 8px; padding: 4px 12px; transform: rotate(-4deg); }
+  .stamp.low { color: var(--olive); border-color: var(--olive); }
+  .meter { padding: 0 14px 14px; }
+  .meter .track { position: relative; height: 12px; background: linear-gradient(to right, var(--olive-bg) 0 50%, var(--brick-bg) 50% 100%); border: 1px solid var(--rule); border-radius: 2px; }
+  .meter .mark { position: absolute; top: -5px; width: 2px; height: 22px; background: var(--ink); }
+  .meter .scale { display: flex; justify-content: space-between; font-size: .7rem; color: var(--ink-2); margin-top: 6px; }
+  details { border-top: 1px solid var(--rule); }
+  summary { cursor: pointer; padding: 10px 14px; font-weight: 600; color: var(--coffee); font-size: .9rem; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "+"; display: inline-block; width: 1.1em; font-family: "JetBrains Mono", monospace; }
+  details[open] summary::before { content: "–"; }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; padding: 0 14px 14px; font-size: .86rem; }
+  dt { color: var(--ink-2); } dd { margin: 0; }
+  .sign { font-size: .78rem; color: var(--ink-2); padding: 10px 14px; border-top: 1px dashed var(--rule); }
+
+  /* request form */
+  .side { display: flex; flex-direction: column; gap: 18px; }
+  @media (min-width: 920px) { .side { position: sticky; top: 16px; } }
+  .side .sheet { padding: 16px 18px; }
+  .side h2 { font: 400 1.2rem "Young Serif", serif; margin: 0 0 2px; }
+  .side .sub { font-size: .84rem; color: var(--ink-2); margin: 0 0 12px; }
+  .row { display: grid; grid-template-columns: 1fr 110px; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--rule); }
+  .row label { font-size: .9rem; }
+  .row label b { color: var(--brick); }
+  .row label small { display: block; color: var(--ink-2); font-size: .74rem; }
+  input, select { font: 400 .95rem "JetBrains Mono", monospace; color: var(--ink); background: #FFFBF3; border: 1px solid var(--sepia); border-radius: 4px; padding: 7px 8px; width: 100%; min-width: 0; }
+  select { font-family: "Source Sans 3", sans-serif; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--coffee); outline-offset: 1px; }
+  .more summary { padding: 10px 0 4px; }
+  .btn { width: 100%; margin-top: 14px; font: 700 1rem "Source Sans 3", sans-serif; letter-spacing: .02em; border: 0; border-radius: 4px; padding: 12px; background: var(--ink); color: var(--paper); cursor: pointer; }
+  .btn:hover { background: var(--coffee); }
+  .opt { display: flex; flex-direction: column; gap: 4px; font-size: .84rem; color: var(--ink-2); margin-bottom: 12px; }
+  .radios { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--sepia); border-radius: 4px; overflow: hidden; }
+  .radios label { text-align: center; padding: 8px 4px; font-size: .84rem; color: var(--ink); cursor: pointer; border-right: 1px solid var(--sepia); }
+  .radios label:last-child { border-right: 0; }
+  .radios input { position: absolute; opacity: 0; width: 1px; }
+  .radios label:has(input:checked) { background: var(--ink); color: var(--paper); font-weight: 600; }
+  .plain { font-size: .8rem; color: var(--ink-2); margin: -6px 0 12px; }
+
+  .composer { position: fixed; inset: auto 0 0 0; background: linear-gradient(to top, var(--desk) 72%, rgba(228,214,193,0)); padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); }
+  .composer-in { max-width: 1100px; margin: 0 auto; display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 920px) { .composer-in { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; } }
+  .suggest { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .suggest button { flex: none; font: 500 .82rem "Source Sans 3", sans-serif; background: var(--paper); color: var(--ink); border: 1px solid var(--sepia); border-radius: 4px; padding: 6px 10px; cursor: pointer; }
+  .box { display: flex; gap: 8px; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 6px; padding: 5px; }
+  .box textarea { flex: 1; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: 8px; }
+  .box button { border: 0; border-radius: 4px; background: var(--brick); color: var(--paper); font: 700 .95rem "Source Sans 3", sans-serif; padding: 0 18px; cursor: pointer; }
+  .open-panel { display: inline-block; margin-top: 8px; font: 600 .85rem "Source Sans 3", sans-serif; background: transparent; border: 1px solid var(--ink); border-radius: 4px; padding: 6px 10px; cursor: pointer; color: var(--ink); }
+  @media (min-width: 920px) { .open-panel { display: none; } }
+  .side.collapsed { display: none; }
+  @media (min-width: 920px) { .side.collapsed { display: flex; } }
+  @media (max-width: 540px) { .entry { grid-template-columns: 1fr; gap: 2px; } .masthead .meta { display: none; } th:nth-child(3), td:nth-child(3) { display: none; } }
+</style>
+</head>
+<body>
+  <div class="page">
+    <section class="sheet">
+      <div class="masthead">
+        <div>
+          <h1>Diabetes Risk Check</h1>
+          <button class="open-panel" type="button" data-toggle>Fill the request form</button>
+        </div>
+        <div class="meta">Screening slip · sample conversation<br>Answers in English or Hinglish</div>
+      </div>
+      <p class="notice">Educational demo, not medical advice. Consult a doctor. Please don't share your name or any ID.</p>
+
+      <div class="remarks" aria-live="polite">
+        <div class="entry"><div class="who">Assistant</div><div class="text"><p>Tell me your age, fasting sugar and BMI. Insulin and blood pressure are optional.</p></div></div>
+        <div class="entry you"><div class="who">You</div><div class="text"><p>meri age 45 hai, fasting sugar 160 aayi</p></div></div>
+        <div class="entry"><div class="who">Assistant</div><div class="text"><p><span class="flagline">BMI missing</span></p><p>Thanks! What's your BMI? That's the last value I need.</p></div></div>
+        <div class="entry you"><div class="who">You</div><div class="text"><p>BMI 29</p></div></div>
+        <div class="entry"><div class="who">Assistant</div><div class="text">
+          <div class="slip">
+            <div class="slip-head"><strong>Screening result</strong><span>MLP · v3</span></div>
+            <table>
+              <thead><tr><th>Measure</th><th>Yours</th><th>Usual range</th><th>Flag</th></tr></thead>
+              <tbody>
+                <tr><td>Fasting sugar</td><td class="num">160 mg/dL</td><td class="num">70–99</td><td><span class="flag high">HIGH</span></td></tr>
+                <tr><td>BMI</td><td class="num">29.0</td><td class="num">18.5–24.9</td><td><span class="flag mid">ABOVE</span></td></tr>
+                <tr><td>Age</td><td class="num">45</td><td class="num">–</td><td><span class="flag ok">NOTED</span></td></tr>
+              </tbody>
+            </table>
+            <div class="total">
+              <div><div class="k">Estimated diabetes risk</div><div class="v">Higher</div></div>
+              <div class="stamp">87%</div>
+            </div>
+            <div class="meter"><div class="track"><div class="mark" style="left:87%"></div></div><div class="scale num"><span>0%</span><span>50%</span><span>100%</span></div></div>
+            <details>
+              <summary>How this was worked out</summary>
+              <dl>
+                <dt>Learned from</dt><dd>10,834 US adults with fasting sugar (NHANES 2009–2018)</dd>
+                <dt>Used</dt><dd>Age, fasting sugar, BMI</dd>
+                <dt>Measured</dt><dd>91% accuracy on 2,167 unseen people · F1 0.72</dd>
+                <dt>Second opinion</dt><dd>Naive Bayes agrees (93%)</dd>
+              </dl>
+            </details>
+            <div class="sign">Fasting sugar of 160 is the main reason. Please see a doctor for an HbA1c or fasting glucose test.</div>
+          </div>
+        </div></div>
+        <div class="entry you"><div class="who">You</div><div class="text"><p>agar sugar 120 ho jaye toh?</p></div></div>
+        <div class="entry"><div class="who">Assistant</div><div class="text">
+          <div class="slip">
+            <div class="slip-head"><strong>What if · fasting sugar 120</strong><span>saved values unchanged</span></div>
+            <div class="total">
+              <div><div class="k">Estimated diabetes risk</div><div class="v">Lower</div></div>
+              <div class="stamp low">13%</div>
+            </div>
+            <div class="meter"><div class="track"><div class="mark" style="left:13%"></div></div><div class="scale num"><span>0%</span><span>50%</span><span>100%</span></div></div>
+          </div>
+        </div></div>
+      </div>
+    </section>
+
+    <aside class="side collapsed" id="panel">
+      <form class="sheet" onsubmit="event.preventDefault()">
+        <h2>Request form</h2>
+        <p class="sub">Age, fasting sugar and BMI are required.</p>
+        <div class="row"><label>Age <b>*</b><small>years</small></label><input value="45" inputmode="decimal"></div>
+        <div class="row"><label>Fasting sugar <b>*</b><small>mg/dL</small></label><input value="160" inputmode="decimal"></div>
+        <div class="row"><label>BMI <b>*</b><small>kg/m²</small></label><input value="29" inputmode="decimal"></div>
+        <div class="row"><label>Insulin<small>µU/mL, optional</small></label><input inputmode="decimal"></div>
+        <details class="more">
+          <summary>More values (optional)</summary>
+          <div class="row"><label>Blood pressure<small>lower number</small></label><input inputmode="decimal"></div>
+          <div class="row"><label>Pregnancies<small>count</small></label><input inputmode="decimal"></div>
+          <div class="row"><label>Skin-fold<small>mm</small></label><input inputmode="decimal"></div>
+          <div class="row"><label>Family-history score<small>0.05–3</small></label><input inputmode="decimal"></div>
+        </details>
+        <button class="btn" type="submit">Check my risk</button>
+      </form>
+      <div class="sheet">
+        <h2>Model</h2>
+        <p class="sub">Which data and method to use.</p>
+        <label class="opt">Learned from
+          <select><option>US adults, fasting sugar (recommended)</option><option>Pima women, 2-hour sugar test</option><option>Kaggle set (comparison only)</option></select>
+        </label>
+        <p class="plain">10,834 people · 91% accurate on unseen data.</p>
+        <div class="opt">Method
+          <div class="radios">
+            <label><input type="radio" name="m" checked>Neural net</label>
+            <label><input type="radio" name="m">Naive Bayes</label>
+            <label><input type="radio" name="m">Compare</label>
+          </div>
+        </div>
+        <label class="opt">Assistant
+          <select><option>Gemini 3.5 Flash</option><option>Gemini 3.5 Flash-Lite</option><option>Offline (no AI)</option></select>
+        </label>
+      </div>
+    </aside>
+  </div>
+
+  <div class="composer">
+    <div class="composer-in">
+      <div style="display:grid;gap:8px">
+        <div class="suggest"><button type="button">What if my BMI was 25?</button><button type="button">Compare both models</button><button type="button">What is a normal fasting sugar?</button></div>
+        <form class="box" onsubmit="event.preventDefault()"><textarea rows="1" placeholder="Type in English or Hinglish…" aria-label="Message"></textarea><button type="submit">Send</button></form>
+      </div>
+    </div>
+  </div>
+<script>
+  document.querySelectorAll('[data-toggle]').forEach(b => b.addEventListener('click', () => {
+    const p = document.getElementById('panel'); p.classList.toggle('collapsed');
+    if (!p.classList.contains('collapsed')) p.scrollIntoView({ behavior: 'smooth' });
+  }));
+  document.querySelectorAll('.suggest button').forEach(b => b.addEventListener('click', () => { document.querySelector('.box textarea').value = b.textContent; }));
+</script>
+</body>
+</html>

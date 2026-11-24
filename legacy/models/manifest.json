@@ -1,0 +1,107 @@
+{
+  "dataset_path": "diabetes.csv",
+  "medians": {
+    "Glucose": 117.0,
+    "Insulin": 125.0,
+    "BMI": 32.3
+  },
+  "feature_list": [
+    "Glucose",
+    "Insulin",
+    "BMI",
+    "Age",
+    "BMI_x_Age",
+    "Glucose_x_Insulin"
+  ],
+  "mlp_hyperparameters": {
+    "hidden_layer_sizes": [
+      100,
+      50
+    ],
+    "max_iter": 1000,
+    "random_state": 42
+  },
+  "random_state": 42,
+  "notes": "Exact restoration of configuration that produced Acc=0.7792, F1=0.6964",
+  "created_date": "2025-11-19 23:56:51",
+  "test_metrics": {
+    "Naive Bayes": {
+      "accuracy": 0.7142857142857143,
+      "precision": 0.5925925925925926,
+      "recall": 0.5925925925925926,
+      "f1_score": 0.5925925925925926,
+      "roc_auc": 0.7761111111111111,
+      "pr_auc": 0.5965484901962934,
+      "brier_score": 0.23352125329005624,
+      "tp": 32,
+      "tn": 78,
+      "fp": 22,
+      "fn": 22
+    },
+    "MLP": {
+      "accuracy": 0.7792207792207793,
+      "precision": 0.6724137931034483,
+      "recall": 0.7222222222222222,
+      "f1_score": 0.6964285714285714,
+      "roc_auc": 0.8214814814814815,
+      "pr_auc": 0.6593631389799628,
+      "brier_score": 0.17823017945285885,
+      "tp": 39,
+      "tn": 81,
+      "fp": 19,
+      "fn": 15
+    }
+  },
+  "cv_results": {
+    "Naive Bayes": {
+      "f1_mean": 0.6515981119257922,
+      "f1_std": 0.039159628664082874,
+      "acc_mean": 0.7564468211527036,
+      "acc_std": 0.0357297556303251
+    },
+    "MLP": {
+      "f1_mean": 0.658056959521693,
+      "f1_std": 0.03393850626465911,
+      "acc_mean": 0.7681945505474918,
+      "acc_std": 0.019085574066772432
+    }
+  },
+  "naive_bayes": {
+    "version": "v1",
+    "created_date": "2025-11-27 11:28:15",
+    "features": [
+      "Glucose",
+      "Insulin",
+      "BMI",
+      "Age",
+      "BMI_x_Age",
+      "Glucose_x_Insulin"
+    ],
+    "test_accuracy": 0.7142857142857143,
+    "test_precision": 0.5925925925925926,
+    "test_recall": 0.5925925925925926,
+    "test_f1_score": 0.5925925925925926,
+    "test_auc": 0.7761111111111111,
+    "cv_mean_f1": 0.6409258805485221,
+    "cv_std_f1": 0.03465074273519686
+  },
+  "mlp": {
+    "version": "v1",
+    "created_date": "2025-11-27 11:28:15",
+    "features": [
+      "Glucose",
+      "Insulin",
+      "BMI",
+      "Age",
+      "BMI_x_Age",
+      "Glucose_x_Insulin"
+    ],
+    "test_accuracy": 0.7792207792207793,
+    "test_precision": 0.6724137931034483,
+    "test_recall": 0.7222222222222222,
+    "test_f1_score": 0.6964285714285714,
+    "test_auc": 0.8214814814814815,
+    "cv_mean_f1": 0.6541389792901153,
+    "cv_std_f1": 0.05988322325587063
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "active": {
+    "pima": "v1",
+    "nhanes": "v3",
+    "kaggle": "v4"
+  },
+  "versions": [
+    {
+      "version": "v1",
+      "created": "2025-11-27 (original assignment)",
+      "rows": 768,
+      "tiers": [
+        "standard"
+      ],
+      "dataset": "pima"
+    },
+    {
+      "version": "v2",
+      "created": "2026-11-24 12:57:02",
+      "rows": 768,
+      "tiers": [
+        "minimum",
+        "standard",
+        "extended",
+        "extended_insulin",
+        "full"
+      ],
+      "dataset": "pima"
+    },
+    {
+      "version": "v3",
+      "dataset": "nhanes",
+      "created": "2026-11-24 16:11:44",
+      "rows": 10834,
+      "tiers": [
+        "minimum",
+        "standard",
+        "extended",
+        "extended_insulin"
+      ]
+    },
+    {
+      "version": "v4",
+      "dataset": "kaggle",
+      "created": "2026-11-24 16:44:00",
+      "rows": 57388,
+      "tiers": [
+        "minimum"
+      ]
+    }
+  ]
+}

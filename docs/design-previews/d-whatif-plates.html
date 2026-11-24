@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D · What-if Plates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gelasio:ital,wght@0,500;0,600;1,500&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F5EDE0;
+    --plate: #FBF6EC;
+    --plate-2: #F0E5D3;
+    --ink: #2F231B;
+    --ink-2: #66503F;
+    --sepia: #7A5C45;
+    --rule: #DCCAB1;
+    --mocha: #7B5B43;
+    --brick: #9C4730;
+    --brick-soft: #E9C3B5;
+    --olive: #4E5C33;
+    --olive-soft: #CBD1AE;
+    --caramel: #B88A58;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--paper); color: var(--ink); font: 16px/1.55 "Onest", system-ui, sans-serif; }
+  ::selection { background: var(--mocha); color: var(--plate); }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 22px 16px 130px; }
+  header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--sepia); }
+  h1 { font: 600 2rem/1.05 "Gelasio", serif; margin: 0; letter-spacing: -0.01em; }
+  header p { margin: 6px 0 0; color: var(--ink-2); max-width: 46ch; }
+  .disc { font-size: .8rem; color: var(--ink-2); text-align: right; max-width: 240px; }
+
+  /* plates */
+  .plates-h { display: flex; justify-content: space-between; align-items: baseline; margin: 20px 0 10px; }
+  .plates-h h2 { font: 600 1.2rem "Gelasio", serif; margin: 0; }
+  .plates-h span { font-size: .82rem; color: var(--ink-2); }
+  .plates { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; scrollbar-width: thin; scrollbar-color: var(--rule) transparent; }
+  .plate { scroll-snap-align: start; background: var(--plate); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 14px 12px; display: grid; grid-template-rows: auto 190px auto auto; gap: 10px; }
+  .plate.current { border-color: var(--sepia); box-shadow: inset 0 0 0 1px var(--sepia); }
+  .plate .cap { font: italic 500 1rem "Gelasio", serif; color: var(--ink); }
+  .plate .cap small { display: block; font: 500 .74rem "Onest", sans-serif; font-style: normal; color: var(--ink-2); letter-spacing: .04em; text-transform: uppercase; }
+  .chart { position: relative; margin-top: 30px; border-bottom: 1.5px solid var(--ink); background: repeating-linear-gradient(to top, transparent 0 39px, var(--rule) 39px 40px); }
+  .chart .col { position: absolute; bottom: 0; left: 50%; width: 46px; margin-left: -23px; border-radius: 3px 3px 0 0; }
+  .chart .col.high { background: var(--brick); }
+  .chart .col.low { background: var(--olive); }
+  .chart .lbl { position: absolute; left: 50%; transform: translate(-50%, -100%); font: 600 1.35rem "Gelasio", serif; font-variant-numeric: tabular-nums; padding-bottom: 4px; }
+  .chart .half { position: absolute; left: 0; right: 0; bottom: 50%; border-top: 1px dashed var(--sepia); }
+  .chart .half span { position: absolute; right: 0; top: -17px; font-size: .75rem; color: var(--ink-2); }
+  .plate .verdict { font-weight: 700; font-size: .92rem; }
+  .plate .verdict.high { color: var(--brick); } .plate .verdict.low { color: var(--olive); }
+  .plate .vals { font-size: .8rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .plate .vals b { color: var(--ink); font-weight: 600; }
+  .plate.add { place-content: center; text-align: center; border-style: dashed; color: var(--ink-2); grid-template-rows: auto; }
+  .plate.add button { font: 600 .9rem "Onest", sans-serif; border: 1px solid var(--sepia); background: transparent; color: var(--ink); border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+
+  .lower { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); margin-top: 22px; }
+  @media (min-width: 920px) { .lower { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: start; } }
+
+  .conv { border-top: 1px solid var(--rule); }
+  .line { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .line .who { font: italic 500 .9rem "Gelasio", serif; color: var(--sepia); padding-top: 1px; }
+  .line.you .text { font-weight: 600; }
+  .line p { margin: 0 0 6px; } .line p:last-child { margin: 0; }
+  .need { display: inline-block; font-size: .76rem; font-weight: 700; color: var(--mocha); border: 1px solid var(--caramel); border-radius: 999px; padding: 1px 9px; margin-bottom: 6px; }
+  details { margin-top: 8px; border: 1px solid var(--rule); border-radius: 4px; background: var(--plate); }
+  summary { cursor: pointer; padding: 9px 12px; font-weight: 600; font-size: .88rem; color: var(--mocha); list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "▸ "; } details[open] summary::before { content: "▾ "; }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; padding: 0 12px 12px; font-size: .86rem; }
+  dt { color: var(--ink-2); } dd { margin: 0; }
+
+  .side { display: flex; flex-direction: column; gap: 16px; }
+  @media (min-width: 920px) { .side { position: sticky; top: 16px; } }
+  .sheet { background: var(--plate); border: 1px solid var(--rule); border-radius: 4px; padding: 16px; }
+  .sheet h2 { font: 600 1.15rem "Gelasio", serif; margin: 0 0 2px; }
+  .sheet .sub { font-size: .84rem; color: var(--ink-2); margin: 0 0 12px; }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  label { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; font-weight: 600; color: var(--ink-2); }
+  label b { color: var(--brick); }
+  input, select { font: 500 .95rem "Onest", sans-serif; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 9px 10px; width: 100%; min-width: 0; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--mocha); outline-offset: 0; }
+  .more { grid-column: 1 / -1; margin: 0; border: 0; background: transparent; }
+  .more summary { padding: 4px 0; }
+  .more .fields { margin-top: 8px; }
+  .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+  .btn { font: 600 .95rem "Onest", sans-serif; border-radius: 4px; padding: 11px; cursor: pointer; border: 1px solid var(--ink); }
+  .btn.primary { background: var(--ink); color: var(--plate); }
+  .btn.secondary { background: transparent; color: var(--ink); }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--sepia); border-radius: 4px; overflow: hidden; }
+  .seg button { font: 500 .84rem "Onest", sans-serif; border: 0; border-right: 1px solid var(--sepia); background: transparent; color: var(--ink); padding: 8px 4px; cursor: pointer; }
+  .seg button:last-child { border-right: 0; }
+  .seg button[aria-pressed="true"] { background: var(--mocha); color: var(--plate); font-weight: 600; }
+  .grp { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; font-size: .8rem; font-weight: 600; color: var(--ink-2); }
+  .plain { font-weight: 400; font-size: .8rem; margin: 0; }
+
+  .composer { position: fixed; inset: auto 0 0 0; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: linear-gradient(to top, var(--paper) 72%, rgba(245,237,224,0)); }
+  .composer-in { max-width: 1140px; margin: 0 auto; display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 920px) { .composer-in { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 22px; } }
+  .suggest { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .suggest button { flex: none; font: 500 .82rem "Onest", sans-serif; background: var(--plate); color: var(--ink); border: 1px solid var(--rule); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+  .box { display: flex; gap: 8px; background: var(--plate); border: 1px solid var(--sepia); border-radius: 6px; padding: 5px; }
+  .box textarea { flex: 1; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: 8px; }
+  .box button { border: 0; border-radius: 4px; background: var(--brick); color: var(--plate); font: 600 .95rem "Onest", sans-serif; padding: 0 18px; cursor: pointer; }
+  .toggle { display: inline-block; margin-top: 8px; font: 600 .85rem "Onest", sans-serif; background: transparent; border: 1px solid var(--sepia); border-radius: 999px; padding: 6px 12px; color: var(--ink); cursor: pointer; }
+  @media (min-width: 920px) { .toggle { display: none; } }
+  .side.collapsed { display: none; }
+  @media (min-width: 920px) { .side.collapsed { display: flex; } }
+  @media (max-width: 919px) { .disc { display: none; } h1 { font-size: 1.7rem; } .plates { grid-auto-columns: 72%; } .line { grid-template-columns: 1fr; gap: 0; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Diabetes Risk Check</h1>
+        <p>Tell me your age, fasting sugar and BMI, then try "what if" changes and compare them side by side.</p>
+        <button class="toggle" type="button" data-toggle>Your values &amp; model</button>
+      </div>
+      <div class="disc">Educational demo, not medical advice. Consult a doctor.</div>
+    </header>
+
+    <div class="plates-h"><h2>Your scenarios</h2><span>Same model, same scale</span></div>
+    <section class="plates" aria-label="Risk scenarios">
+      <article class="plate current">
+        <div class="cap"><small>Now</small>Your values</div>
+        <div class="chart"><div class="half"><span>50%</span></div><div class="col high" style="height:87%"></div><div class="lbl" style="bottom:87%">87%</div></div>
+        <div class="verdict high">Higher risk</div>
+        <div class="vals">Age <b>45</b> · Sugar <b>160</b> · BMI <b>29</b></div>
+      </article>
+      <article class="plate">
+        <div class="cap"><small>What if</small>Sugar falls to 120</div>
+        <div class="chart"><div class="half"><span>50%</span></div><div class="col low" style="height:13%"></div><div class="lbl" style="bottom:13%">13%</div></div>
+        <div class="verdict low">Lower risk</div>
+        <div class="vals">Age 45 · Sugar <b>120</b> · BMI 29</div>
+      </article>
+      <article class="plate">
+        <div class="cap"><small>What if</small>BMI falls to 25</div>
+        <div class="chart"><div class="half"><span>50%</span></div><div class="col high" style="height:86%"></div><div class="lbl" style="bottom:86%">86%</div></div>
+        <div class="verdict high">Higher risk</div>
+        <div class="vals">Age 45 · Sugar 160 · BMI <b>25</b></div>
+      </article>
+      <article class="plate add">
+        <p style="margin:0 0 8px">Try another change</p>
+        <button type="button">+ What if…</button>
+      </article>
+    </section>
+
+    <div class="lower">
+      <main class="conv" aria-live="polite">
+        <div class="line"><div class="who">Assistant</div><div class="text"><p>Share your age, fasting sugar and BMI. Insulin and blood pressure are optional. No names or IDs needed.</p></div></div>
+        <div class="line you"><div class="who">You</div><div class="text"><p>meri age 45 hai, fasting sugar 160 aayi</p></div></div>
+        <div class="line"><div class="who">Assistant</div><div class="text"><span class="need">Needs BMI</span><p>Thanks! What's your BMI? That's the last value I need.</p></div></div>
+        <div class="line you"><div class="who">You</div><div class="text"><p>BMI 29</p></div></div>
+        <div class="line"><div class="who">Assistant</div><div class="text">
+          <p>The model estimates a <strong>higher risk (87%)</strong>. Your fasting sugar of 160 is the main reason; the usual fasting range is under 100. Please see a doctor for an HbA1c or fasting glucose test.</p>
+          <details>
+            <summary>How this was worked out</summary>
+            <dl>
+              <dt>Learned from</dt><dd>10,834 US adults with fasting sugar (NHANES 2009–2018)</dd>
+              <dt>Model</dt><dd>MLP neural network · v3</dd>
+              <dt>Measured</dt><dd>91% accuracy on 2,167 unseen people · F1 0.72</dd>
+              <dt>Second opinion</dt><dd>Naive Bayes agrees (93%)</dd>
+            </dl>
+          </details>
+        </div></div>
+        <div class="line you"><div class="who">You</div><div class="text"><p>agar sugar 120 ho jaye toh?</p></div></div>
+        <div class="line"><div class="who">Assistant</div><div class="text"><p>With fasting sugar at 120, the estimate drops to <strong>13%</strong>. I added it as a plate above so you can compare. Your saved values haven't changed.</p></div></div>
+        <div class="line you"><div class="who">You</div><div class="text"><p>and if my BMI was 25?</p></div></div>
+        <div class="line"><div class="who">Assistant</div><div class="text"><p>Only a small change: <strong>86%</strong>. For you, sugar matters much more than BMI.</p></div></div>
+      </main>
+
+      <aside class="side collapsed" id="panel">
+        <form class="sheet" onsubmit="event.preventDefault()">
+          <h2>Your values</h2>
+          <p class="sub">Age, fasting sugar and BMI are enough.</p>
+          <div class="fields">
+            <label>Age <b>*</b><input value="45" inputmode="decimal"></label>
+            <label>Fasting sugar <b>*</b><input value="160" inputmode="decimal"></label>
+            <label>BMI <b>*</b><input value="29" inputmode="decimal"></label>
+            <label>Insulin<input placeholder="optional" inputmode="decimal"></label>
+            <details class="more"><summary>More values</summary>
+              <div class="fields">
+                <label>Blood pressure (lower)<input inputmode="decimal"></label>
+                <label>Pregnancies<input inputmode="decimal"></label>
+                <label>Skin-fold (mm)<input inputmode="decimal"></label>
+                <label>Family-history score<input inputmode="decimal"></label>
+              </div>
+            </details>
+          </div>
+          <div class="btns"><button class="btn primary" type="submit">Check my risk</button><button class="btn secondary" type="button">Add as what-if</button></div>
+        </form>
+        <div class="sheet">
+          <h2>Model</h2>
+          <p class="sub">What the estimate is based on.</p>
+          <label class="grp">Learned from
+            <select><option>US adults, fasting sugar (recommended)</option><option>Pima women, 2-hour sugar test</option><option>Kaggle set (comparison only)</option></select>
+            <span class="plain">10,834 people · 91% accurate on unseen data.</span>
+          </label>
+          <div class="grp">Method
+            <div class="seg" data-seg><button type="button" aria-pressed="true">Neural net</button><button type="button" aria-pressed="false">Naive Bayes</button><button type="button" aria-pressed="false">Compare</button></div>
+          </div>
+          <label class="grp" style="margin-bottom:0">Assistant
+            <select><option>Gemini 3.5 Flash</option><option>Gemini 3.5 Flash-Lite</option><option>Offline (no AI)</option></select>
+          </label>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="composer">
+    <div class="composer-in">
+      <div style="display:grid;gap:8px">
+        <div class="suggest"><button type="button">What if my sugar was 100?</button><button type="button">Compare both models</button><button type="button">Why does sugar matter most?</button></div>
+        <form class="box" onsubmit="event.preventDefault()"><textarea rows="1" placeholder="Type in English or Hinglish…" aria-label="Message"></textarea><button type="submit">Send</button></form>
+      </div>
+    </div>
+  </div>
+<script>
+  document.querySelectorAll('[data-toggle]').forEach(b => b.addEventListener('click', () => {
+    const p = document.getElementById('panel'); p.classList.toggle('collapsed');
+    if (!p.classList.contains('collapsed')) p.scrollIntoView({ behavior: 'smooth' });
+  }));
+  document.querySelectorAll('[data-seg]').forEach(g => g.addEventListener('click', e => {
+    if (e.target.tagName !== 'BUTTON') return;
+    g.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === e.target)));
+  }));
+  document.querySelectorAll('.suggest button').forEach(b => b.addEventListener('click', () => { document.querySelector('.box textarea').value = b.textContent; }));
+</script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C · Coffee-house Menu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --espresso: #2B1D15;
+    --espresso-2: #3C2A1F;
+    --crema: #F7EFE2;
+    --cream: #FCF8F1;
+    --foam: #EFE3D0;
+    --latte: #DCC6A8;
+    --caramel: #B9874F;
+    --caramel-ink: #7A5124;
+    --ink: #2B1D15;
+    --ink-2: #6A5243;
+    --rule: #E3D3BC;
+    --brick: #9E4630;
+    --brick-bg: #F4DDD3;
+    --olive: #4F5D33;
+    --olive-bg: #E3E6CE;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--crema); color: var(--ink); font: 16px/1.55 "Albert Sans", system-ui, sans-serif; }
+  ::selection { background: var(--caramel); color: var(--cream); }
+
+  .band { background: var(--espresso); color: var(--crema); }
+  .band-in { max-width: 1120px; margin: 0 auto; padding: 22px 16px 26px; display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
+  .band h1 { font: 400 2.3rem/1 "Gloock", serif; margin: 0; letter-spacing: -0.01em; }
+  .band p { margin: 8px 0 0; color: #D9C7AF; max-width: 44ch; }
+  .band .tabs { display: flex; gap: 4px; background: var(--espresso-2); border-radius: 999px; padding: 4px; }
+  .band .tabs button { font: 600 .85rem "Albert Sans", sans-serif; border: 0; border-radius: 999px; padding: 8px 14px; background: transparent; color: #D9C7AF; cursor: pointer; }
+  .band .tabs button[aria-selected="true"] { background: var(--crema); color: var(--espresso); }
+  .warn { max-width: 1120px; margin: 0 auto; padding: 10px 16px 0; font-size: .82rem; color: var(--ink-2); display: flex; gap: 8px; align-items: center; }
+  .warn svg { flex: none; color: var(--caramel-ink); }
+
+  .page { max-width: 1120px; margin: 0 auto; padding: 16px 16px 130px; display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 920px) { .page { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: start; } }
+
+  .conv { display: flex; flex-direction: column; gap: 14px; }
+  .bubble { max-width: 86%; padding: 12px 16px; border-radius: 18px; }
+  .bubble p { margin: 0 0 6px; } .bubble p:last-child { margin: 0; }
+  .bot { align-self: flex-start; background: var(--cream); border: 1px solid var(--rule); border-bottom-left-radius: 6px; }
+  .you { align-self: flex-end; background: var(--espresso-2); color: var(--crema); border-bottom-right-radius: 6px; }
+  .asks { display: inline-block; font-size: .78rem; font-weight: 700; color: var(--caramel-ink); background: var(--foam); border-radius: 999px; padding: 2px 10px; margin-bottom: 6px; }
+
+  /* the reading card */
+  .reading { align-self: stretch; max-width: 100%; background: var(--cream); border: 1px solid var(--rule); border-radius: 20px; overflow: hidden; }
+  .reading .top { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; padding: 18px 18px 14px; }
+  .cup { width: 92px; height: 92px; position: relative; flex: none; }
+  .cup svg { width: 100%; height: 100%; }
+  .cup .pct { position: absolute; inset: 0; display: grid; place-items: center; font: 400 1.6rem "Gloock", serif; color: var(--ink); padding-top: 6px; }
+  .reading .k { font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+  .reading .v { font: 400 1.8rem/1.05 "Gloock", serif; margin: 2px 0 4px; }
+  .reading.high .v { color: var(--brick); }
+  .reading.low .v { color: var(--olive); }
+  .reading .note { font-size: .88rem; color: var(--ink-2); margin: 0; }
+  .menu { padding: 4px 18px 6px; border-top: 1px dashed var(--rule); }
+  .menu .menu-h { font: 400 1rem "Gloock", serif; margin: 10px 0 4px; }
+  .item { display: flex; align-items: baseline; gap: 8px; padding: 4px 0; font-size: .95rem; }
+  .item .name { flex: none; }
+  .item .dots { flex: 1; border-bottom: 2px dotted var(--latte); transform: translateY(-4px); }
+  .item .val { flex: none; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .item .val small { font-weight: 500; color: var(--ink-2); }
+  .item .hi { color: var(--brick); }
+  .explain { padding: 10px 18px 14px; }
+  .explain p { margin: 0 0 6px; }
+  details { border-top: 1px solid var(--rule); background: var(--crema); }
+  summary { cursor: pointer; padding: 12px 18px; font-weight: 600; color: var(--caramel-ink); list-style: none; display: flex; justify-content: space-between; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "Show"; font-size: .8rem; color: var(--ink-2); font-weight: 500; }
+  details[open] summary::after { content: "Hide"; }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; padding: 0 18px 14px; font-size: .88rem; }
+  dt { color: var(--ink-2); } dd { margin: 0; }
+  .fine { font-size: .78rem; color: var(--ink-2); padding: 0 18px 14px; margin: 0; }
+
+  /* side */
+  .side { display: flex; flex-direction: column; gap: 18px; }
+  @media (min-width: 920px) { .side { position: sticky; top: 16px; } }
+  .card { background: var(--cream); border: 1px solid var(--rule); border-radius: 20px; padding: 18px; }
+  .card h2 { font: 400 1.35rem "Gloock", serif; margin: 0 0 2px; }
+  .card .sub { font-size: .85rem; color: var(--ink-2); margin: 0 0 14px; }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  label { display: flex; flex-direction: column; gap: 4px; font-size: .82rem; font-weight: 600; color: var(--ink-2); }
+  label b { color: var(--brick); }
+  input, select { font: 500 1rem "Albert Sans", sans-serif; color: var(--ink); background: var(--crema); border: 1px solid var(--rule); border-radius: 12px; padding: 10px 12px; width: 100%; min-width: 0; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--caramel); outline-offset: 0; }
+  .more { grid-column: 1 / -1; background: transparent; }
+  .more summary { padding: 6px 0; }
+  .more .fields { margin-top: 8px; }
+  .btn { width: 100%; margin-top: 14px; font: 700 1rem "Albert Sans", sans-serif; border: 0; border-radius: 999px; padding: 13px; background: var(--espresso); color: var(--crema); cursor: pointer; }
+  .btn:hover { background: var(--espresso-2); }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pills button { font: 600 .85rem "Albert Sans", sans-serif; border: 1px solid var(--rule); border-radius: 999px; padding: 8px 12px; background: var(--crema); color: var(--ink); cursor: pointer; }
+  .pills button[aria-pressed="true"] { background: var(--caramel-ink); border-color: var(--caramel-ink); color: var(--cream); }
+  .group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .group > span { font-size: .82rem; font-weight: 600; color: var(--ink-2); }
+  .plain { font-size: .8rem; color: var(--ink-2); margin: 0; }
+
+  .composer { position: fixed; inset: auto 0 0 0; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: linear-gradient(to top, var(--crema) 72%, rgba(247,239,226,0)); }
+  .composer-in { max-width: 1120px; margin: 0 auto; display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 920px) { .composer-in { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 22px; } }
+  .suggest { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .suggest button { flex: none; font: 600 .82rem "Albert Sans", sans-serif; background: var(--cream); color: var(--ink); border: 1px solid var(--rule); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+  .box { display: flex; gap: 8px; background: var(--cream); border: 1px solid var(--latte); border-radius: 999px; padding: 6px 6px 6px 16px; }
+  .box textarea { flex: 1; border: 0; background: transparent; resize: none; font: inherit; color: var(--ink); padding: 8px 0; }
+  .box button { border: 0; border-radius: 999px; background: var(--espresso); color: var(--crema); font: 700 .95rem "Albert Sans", sans-serif; padding: 0 20px; cursor: pointer; }
+  .side.collapsed { display: none; }
+  @media (min-width: 920px) { .side.collapsed { display: flex; } .band .tabs { display: none; } }
+  @media (max-width: 919px) { .band-in { flex-direction: column; align-items: flex-start; } .band h1 { font-size: 1.9rem; } .bubble { max-width: 92%; } }
+</style>
+</head>
+<body>
+  <div class="band">
+    <div class="band-in">
+      <div>
+        <h1>Diabetes Risk Check</h1>
+        <p>Tell me your age, fasting sugar and BMI in English or Hinglish. I'll estimate your risk and explain it simply.</p>
+      </div>
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="chat">Chat</button>
+        <button role="tab" aria-selected="false" data-tab="form">Form</button>
+      </div>
+    </div>
+  </div>
+  <p class="warn"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5v4.2M8 11.2v.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Educational demo, not medical advice. Consult a doctor.</p>
+
+  <div class="page">
+    <main class="conv" id="chat" aria-live="polite">
+      <div class="bubble bot"><p>Hi! Share your age, fasting sugar and BMI. Insulin and blood pressure are optional. No names or IDs needed.</p></div>
+      <div class="bubble you"><p>meri age 45 hai, fasting sugar 160 aayi</p></div>
+      <div class="bubble bot"><span class="asks">Needs BMI</span><p>Thanks! What's your BMI? That's the last value I need.</p></div>
+      <div class="bubble you"><p>BMI 29</p></div>
+
+      <article class="reading high">
+        <div class="top">
+          <div class="cup" aria-hidden="true">
+            <svg viewBox="0 0 92 92"><circle cx="46" cy="46" r="38" fill="none" stroke="#EFE3D0" stroke-width="10"/><circle cx="46" cy="46" r="38" fill="none" stroke="#9E4630" stroke-width="10" stroke-linecap="round" stroke-dasharray="207.7 238.8" transform="rotate(-90 46 46)"/></svg>
+            <div class="pct">87%</div>
+          </div>
+          <div>
+            <div class="k">Estimated diabetes risk</div>
+            <div class="v">Higher</div>
+            <p class="note">Neural net, learned from 10,834 US adults</p>
+          </div>
+        </div>
+        <div class="menu">
+          <h2 class="menu-h">Your values</h2>
+          <div class="item"><span class="name">Age</span><span class="dots"></span><span class="val">45 <small>yrs</small></span></div>
+          <div class="item"><span class="name">Fasting sugar</span><span class="dots"></span><span class="val hi">160 <small>mg/dL</small></span></div>
+          <div class="item"><span class="name">BMI</span><span class="dots"></span><span class="val">29</span></div>
+        </div>
+        <div class="explain">
+          <p>Your fasting sugar of 160 is the main reason; the usual fasting range is under 100.</p>
+          <p>Please see a doctor for an HbA1c or fasting glucose test.</p>
+        </div>
+        <details>
+          <summary>How this was worked out</summary>
+          <dl>
+            <dt>Learned from</dt><dd>NHANES 2009–2018, US adults with fasting sugar</dd>
+            <dt>Model</dt><dd>MLP neural network · v3</dd>
+            <dt>Measured</dt><dd>91% accuracy on 2,167 unseen people · F1 0.72</dd>
+            <dt>Second opinion</dt><dd>Naive Bayes agrees (93%)</dd>
+          </dl>
+        </details>
+        <p class="fine">Educational demo, not medical advice. Consult a doctor.</p>
+      </article>
+
+      <div class="bubble you"><p>agar sugar 120 ho jaye toh?</p></div>
+      <article class="reading low">
+        <div class="top">
+          <div class="cup" aria-hidden="true">
+            <svg viewBox="0 0 92 92"><circle cx="46" cy="46" r="38" fill="none" stroke="#EFE3D0" stroke-width="10"/><circle cx="46" cy="46" r="38" fill="none" stroke="#4F5D33" stroke-width="10" stroke-linecap="round" stroke-dasharray="31 238.8" transform="rotate(-90 46 46)"/></svg>
+            <div class="pct">13%</div>
+          </div>
+          <div>
+            <div class="k">What if · fasting sugar 120</div>
+            <div class="v">Lower</div>
+            <p class="note">Same age and BMI. Your saved values haven't changed.</p>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <aside class="side collapsed" id="panel">
+      <form class="card" onsubmit="event.preventDefault()">
+        <h2>Your values</h2>
+        <p class="sub">Age, fasting sugar and BMI are enough.</p>
+        <div class="fields">
+          <label>Age <b>*</b><input value="45" inputmode="decimal"></label>
+          <label>Fasting sugar <b>*</b><input value="160" inputmode="decimal"></label>
+          <label>BMI <b>*</b><input value="29" inputmode="decimal"></label>
+          <label>Insulin<input placeholder="optional" inputmode="decimal"></label>
+          <details class="more">
+            <summary>More values</summary>
+            <div class="fields">
+              <label>Blood pressure (lower)<input inputmode="decimal"></label>
+              <label>Pregnancies<input inputmode="decimal"></label>
+              <label>Skin-fold (mm)<input inputmode="decimal"></label>
+              <label>Family-history score<input inputmode="decimal"></label>
+            </div>
+          </details>
+        </div>
+        <button class="btn" type="submit">Check my risk</button>
+      </form>
+      <div class="card">
+        <h2>Model</h2>
+        <p class="sub">Pick what the estimate is based on.</p>
+        <div class="group"><span>Learned from</span>
+          <select><option>US adults, fasting sugar (recommended)</option><option>Pima women, 2-hour sugar test</option><option>Kaggle set (comparison only)</option></select>
+          <p class="plain">10,834 people · 91% accurate on unseen data.</p>
+        </div>
+        <div class="group"><span>Method</span>
+          <div class="pills" data-pills><button type="button" aria-pressed="true">Neural net</button><button type="button" aria-pressed="false">Naive Bayes</button><button type="button" aria-pressed="false">Compare both</button></div>
+        </div>
+        <div class="group" style="margin-bottom:0"><span>Assistant</span>
+          <select><option>Gemini 3.5 Flash</option><option>Gemini 3.5 Flash-Lite</option><option>Offline (no AI)</option></select>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="composer">
+    <div class="composer-in">
+      <div style="display:grid;gap:8px">
+        <div class="suggest"><button type="button">What if my BMI was 25?</button><button type="button">Compare both models</button><button type="button">Why is sugar so important?</button></div>
+        <form class="box" onsubmit="event.preventDefault()"><textarea rows="1" placeholder="Type in English or Hinglish…" aria-label="Message"></textarea><button type="submit">Send</button></form>
+      </div>
+    </div>
+  </div>
+<script>
+  const panel = document.getElementById('panel'), chat = document.getElementById('chat');
+  document.querySelectorAll('[data-tab]').forEach(t => t.addEventListener('click', () => {
+    document.querySelectorAll('[data-tab]').forEach(x => x.setAttribute('aria-selected', String(x === t)));
+    const form = t.dataset.tab === 'form';
+    panel.classList.toggle('collapsed', !form);
+    chat.style.display = form && innerWidth < 920 ? 'none' : '';
+  }));
+  document.querySelectorAll('[data-pills]').forEach(g => g.addEventListener('click', e => {
+    if (e.target.tagName !== 'BUTTON') return;
+    g.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === e.target)));
+  }));
+  document.querySelectorAll('.suggest button').forEach(b => b.addEventListener('click', () => { document.querySelector('.box textarea').value = b.textContent; }));
+</script>
+</body>
+</html>
