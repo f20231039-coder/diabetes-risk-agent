@@ -102,8 +102,8 @@ Each training run (`python -m health_agent.training --dataset nhanes|pima`) trai
 | NHANES · v3 | + insulin | 90.7% | 0.712 | 0.726 ± 0.014 | 0.929 |
 | NHANES · v3 | + blood pressure, pregnancies | 89.6% | 0.689 | 0.707 ± 0.034 | 0.913 |
 | Pima · v1 (original, live) | age, glucose, BMI, insulin | 77.9% | 0.696 | – | 0.821 |
-| Pima · v2 (not promoted) | minimum | 76.0% | 0.667 | 0.583 ± 0.041 | 0.822 |
-| Pima · v2 | + blood pressure, pregnancies | 74.0% | 0.623 | 0.641 ± 0.073 | 0.801 |
+| Pima · 8-feature retrain (experiment, not kept) | minimum | 76.0% | 0.667 | 0.583 ± 0.041 | 0.822 |
+| Pima · 8-feature retrain | + blood pressure, pregnancies | 74.0% | 0.623 | 0.641 ± 0.073 | 0.801 |
 | Kaggle · v4 (11,478 test rows) | minimum | 92.9% | 0.576 | 0.561 | 0.911 |
 
 How to read this:
@@ -114,7 +114,7 @@ How to read this:
 
 ## Design
 
-The chat and admin pages use a warm "coffee-house menu" look: an espresso header band, cream body, values listed like a café menu, and a ring gauge for risk. It's phone first; desktop puts the form beside the chat. It was chosen from four full mock-ups (pinboard, report slip, coffee menu, what-if plates), which are kept in `docs/design-previews/` (open `index.html`). They aren't served by the app.
+The chat and admin pages use a warm "coffee-house menu" look: an espresso header band, cream body, values listed like a café menu, and a ring gauge for risk. It's phone first; desktop puts the form beside the chat. It was chosen by comparing four full mock-ups (pinboard, report slip, coffee menu, what-if plates).
 
 ## Chat settings panel
 
@@ -151,7 +151,21 @@ LLM_PROVIDER=ollama LLM_MODEL=qwen3.5:4b uvicorn health_agent.server:app --port 
 
 Open http://localhost:7860 for the chat page, or http://localhost:7860/docs for the API docs.
 
-All providers go through one OpenAI-compatible client (`health_agent/llm.py`), so switching is an env var. Keys can go in a local `.env` file (git- and docker-ignored; see `.env.example`). If the primary model is overloaded (429/5xx), the client retries with backoff and then switches to a backup model (`LLM_FALLBACK_MODELS`).
+All providers go through one OpenAI-compatible client (`health_agent/llm.py`), so switching is an env var. If the primary model is overloaded (429/5xx), the client retries with backoff and then switches to a backup model (`LLM_FALLBACK_MODELS`).
+
+### Settings (environment variables)
+
+Set them in the shell, as host secrets, or in a local `.env` file. `.env` is git- and docker-ignored and read at startup, and real environment variables win over it.
+
+| Variable | Example | Purpose |
+|---|---|---|
+| `LLM_PROVIDER` | `gemini` | `gemini`, `groq`, `ollama`, `openai` or `rules` (offline) |
+| `GEMINI_API_KEY` / `GROQ_API_KEY` | | Key for the chosen provider |
+| `LLM_MODEL` | `gemini-3.5-flash-lite` | Override the provider's default model |
+| `LLM_FALLBACK_MODELS` | `gemini-3-flash-preview` | Backup models when the primary is busy (empty = none) |
+| `ADMIN_TOKEN` | a long random string | Enables `/admin`; admin is off when unset |
+| `RATE_LIMIT_PER_HOUR` | `20` | Chat messages per IP per hour |
+| `STATS_FILE` | `/data/stats.json` | Persist the anonymous usage counts |
 
 ### Endpoints
 
@@ -255,7 +269,7 @@ Per-case results are saved in `evals/results/`.
 ## Tests
 
 ```bash
-pip install -r requirements-dev.txt
+pip install -r requirements.txt pytest
 pytest -q tests
 ```
 
@@ -291,11 +305,9 @@ CI (`.github/workflows/ci.yml`) runs on every push:
 ├── data/                  training CSVs (Pima, NHANES, Kaggle); raw downloads are git-ignored
 ├── evals/                 cases.jsonl, run.py, compare.py, results/
 ├── tests/                 pytest suite
-├── docs/design-previews/  the four design mock-ups the look was chosen from (not served)
 ├── legacy/                the original assignment (training scripts, Flask app, plots); see legacy/README.md
 ├── Dockerfile
-├── requirements.txt       runtime dependencies
-└── requirements-dev.txt   + test dependencies
+└── requirements.txt       dependencies
 ```
 
 ## Scaling notes

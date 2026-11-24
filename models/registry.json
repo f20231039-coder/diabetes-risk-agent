@@ -15,19 +15,6 @@
       "dataset": "pima"
     },
     {
-      "version": "v2",
-      "created": "2026-11-24 12:57:02",
-      "rows": 768,
-      "tiers": [
-        "minimum",
-        "standard",
-        "extended",
-        "extended_insulin",
-        "full"
-      ],
-      "dataset": "pima"
-    },
-    {
       "version": "v3",
       "dataset": "nhanes",
       "created": "2026-11-24 16:11:44",

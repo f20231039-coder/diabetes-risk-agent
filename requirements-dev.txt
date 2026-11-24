@@ -1,3 +1,0 @@
-# Everything needed to run the app plus the test suite.
--r requirements.txt
-pytest>=8.0
