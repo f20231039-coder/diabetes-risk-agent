@@ -1,12 +1,20 @@
+# Python
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Secrets
 .env
-system.log
+
+# Generated outputs (re-created by the scripts)
+evals/results/
 evals/*.log
+models/*.log
+legacy/plots/
+system.log
+
+# Raw downloads and uploads
 data/nhanes/raw/
+data/kaggle/raw/
 data/download/
 data/uploads/
-data/kaggle/raw/
-
-models/*.log
