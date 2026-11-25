@@ -11,8 +11,6 @@ jobs:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true # the trained models (*.pkl) are stored with Git LFS
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -33,8 +31,6 @@ jobs:
     needs: test-and-eval
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
       - run: docker build -t diabetes-agent .
       - name: Smoke test the image
         run: |

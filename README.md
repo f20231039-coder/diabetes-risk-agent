@@ -1,9 +1,3 @@
----
-title: Diabetes Risk Agent
-sdk: docker
-app_port: 7860
----
-
 # Diabetes Risk Health-Check Agent
 
 A chat assistant that estimates diabetes risk. You describe your age, blood sugar and BMI in plain English or Hinglish (for example *"meri age 45 hai, fasting sugar 160 aayi, BMI 29"*). An LLM pulls the values into a strict schema, calls a trained machine-learning model as a tool, and explains the result. It remembers the conversation, so you can ask *"what if my BMI was 25?"*.
@@ -100,11 +94,18 @@ python -m health_agent.training --dataset nhanes  # retrain a model set
 
 On every push, CI runs the tests, the offline evaluation, and a Docker build with a smoke test.
 
-## Deploy
+## Deploy (free, on Render)
 
-The repo deploys as-is to a free **Hugging Face Docker Space** (configured by the header at the top of this file). Add `GEMINI_API_KEY` as a secret and `LLM_PROVIDER=gemini` as a variable. The same image also runs anywhere with `docker build -t diabetes-agent . && docker run -p 7860:7860 -e GEMINI_API_KEY=... diabetes-agent`.
+1. Sign in at [render.com](https://render.com) with GitHub, then choose **New → Web Service** and pick this repository.
+2. Use these settings:
+   - **Runtime:** Python
+   - **Build command:** `pip install -r requirements.txt`
+   - **Start command:** `uvicorn health_agent.server:app --host 0.0.0.0 --port $PORT`
+   - **Instance type:** Free
+   - **Health check path:** `/health`
+3. Add environment variables: `GEMINI_API_KEY` (your key), `LLM_PROVIDER=gemini`, `LLM_MODEL=gemini-3.5-flash-lite`, and optionally `ADMIN_TOKEN`.
 
-Sessions and stats are kept in memory, so they reset when the app restarts.
+Free services sleep when idle, so the first visit after a while takes about a minute to wake up. Sessions and stats are kept in memory, so they reset on restart. The `Dockerfile` runs the same app on any Docker host: `docker build -t diabetes-agent . && docker run -p 7860:7860 -e GEMINI_API_KEY=... diabetes-agent`.
 
 ## Project structure
 
