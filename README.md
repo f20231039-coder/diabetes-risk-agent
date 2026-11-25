@@ -2,6 +2,8 @@
 
 A chat assistant that estimates diabetes risk. You describe your age, blood sugar and BMI in plain English or Hinglish (for example *"meri age 45 hai, fasting sugar 160 aayi, BMI 29"*). An LLM pulls the values into a strict schema, calls a trained machine-learning model as a tool, and explains the result. It remembers the conversation, so you can ask *"what if my BMI was 25?"*.
 
+**Live demo:** https://diabetes-risk-agent.onrender.com (free hosting: the first visit after a quiet period takes about a minute to wake up)
+
 > Educational demo, not medical advice. Consult a doctor.
 
 **Stack:** Python, FastAPI, Pydantic, scikit-learn, Gemini (or Groq / Ollama), plain HTML/CSS/JS, Docker, GitHub Actions.
